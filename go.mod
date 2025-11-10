@@ -1,6 +1,6 @@
 module github.com/nonoo/yt-dlp-telegram-bot
 
-go 1.22
+go 1.25
 
 require (
 	github.com/dustin/go-humanize v1.0.1
@@ -8,7 +8,7 @@ require (
 	github.com/google/go-github/v53 v53.2.0
 	github.com/gotd/td v0.84.0
 	github.com/u2takey/ffmpeg-go v0.5.0
-	github.com/wader/goutubedl v0.0.0-20240626070646-8cef76d0c092
+	github.com/wader/goutubedl v0.0.0-20251106230840-5329bbeafde9
 	golang.org/x/exp v0.0.0-20230116083435-1de6713980de
 )
 
