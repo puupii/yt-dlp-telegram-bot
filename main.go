@@ -145,6 +145,7 @@ func main() {
 	client := telegram.NewClient(params.ApiID, params.ApiHash, opts)
 
 	if err := client.Run(context.Background(), func(ctx context.Context) error {
+		fmt.Println("helloropo")
 		status, err := client.Auth().Status(ctx)
 		if err != nil {
 			panic(fmt.Sprint("auth status err: ", err))
@@ -157,11 +158,13 @@ func main() {
 			}
 		}
 
+		fmt.Println("helloropo")
 		api := client.API()
 
 		telegramUploader = uploader.NewUploader(api).WithProgress(dlUploader)
 		telegramSender = message.NewSender(api).WithUploader(telegramUploader)
 
+		fmt.Println("helloropo")
 		goutubedl.Path, err = exec.LookPath(goutubedl.Path)
 		if err != nil {
 			goutubedl.Path, err = ytdlpDownloadLatest(ctx)
@@ -170,8 +173,10 @@ func main() {
 			}
 		}
 
+		fmt.Println("helloropo")
 		dlQueue.Init(ctx)
 
+		fmt.Println("helloropo")
 		dispatcher.OnNewMessage(handleMsg)
 
 		fmt.Println("telegram connection up")
