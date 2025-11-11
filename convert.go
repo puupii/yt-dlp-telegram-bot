@@ -9,8 +9,6 @@ import (
 	"net"
 	"os"
 	"path"
-	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -31,7 +29,6 @@ type ffmpegProbeDataStreamsStream struct {
 
 type ffmpegProbeDataFormat struct {
 	FormatName string `json:"format_name"`
-	Duration   string `json:"duration"`
 }
 
 type ffmpegProbeData struct {
@@ -49,8 +46,6 @@ type Converter struct {
 	AudioCodecs             string
 	AudioConvertNeeded      bool
 	SingleAudioStreamNeeded bool
-
-	Duration float64
 
 	UpdateProgressPercentCallback UpdateProgressPercentCallbackFunc
 }
@@ -71,11 +66,6 @@ func (c *Converter) Probe(rr *ReReadCloser) error {
 	err = json.Unmarshal([]byte(i), &pd)
 	if err != nil {
 		return fmt.Errorf("error decoding probe result: %w", err)
-	}
-
-	c.Duration, err = strconv.ParseFloat(pd.Format.Duration, 64)
-	if err != nil {
-		fmt.Println("    error parsing duration:", err)
 	}
 
 	compatibleVideoCodecsCopy := compatibleVideoCodecs
@@ -145,8 +135,6 @@ func (c *Converter) ffmpegProgressSock() (sockFilename string, sock net.Listener
 	}
 
 	go func() {
-		re := regexp.MustCompile(`out_time_ms=(\d+)\n`)
-
 		fd, err := sock.Accept()
 		if err != nil {
 			fmt.Println("    ffmpeg progress socket accept error:", err)
@@ -164,13 +152,6 @@ func (c *Converter) ffmpegProgressSock() (sockFilename string, sock net.Listener
 			}
 
 			data += string(buf)
-			a := re.FindAllStringSubmatch(data, -1)
-
-			if len(a) > 0 && len(a[len(a)-1]) > 0 {
-				data = ""
-				l, _ := strconv.Atoi(a[len(a)-1][len(a[len(a)-1])-1])
-				c.UpdateProgressPercentCallback(processStr, int(100*float64(l)/c.Duration/1000000))
-			}
 
 			if strings.Contains(data, "progress=end") {
 				c.UpdateProgressPercentCallback(processStr, 100)
@@ -243,15 +224,13 @@ func (c *Converter) ConvertIfNeeded(ctx context.Context, rr *ReReadCloser) (read
 
 	var progressSock net.Listener
 	if c.UpdateProgressPercentCallback != nil {
-		if c.Duration > 0 {
-			var progressSockFilename string
-			progressSockFilename, progressSock, err = c.ffmpegProgressSock()
-			if err == nil {
-				ff = ff.GlobalArgs("-progress", "unix:"+progressSockFilename)
-			}
-		} else {
-			c.UpdateProgressPercentCallback(processStr, -1)
+		var progressSockFilename string
+		progressSockFilename, progressSock, err = c.ffmpegProgressSock()
+		if err == nil {
+			ff = ff.GlobalArgs("-progress", "unix:"+progressSockFilename)
 		}
+	} else {
+		c.UpdateProgressPercentCallback(processStr, -1)
 	}
 
 	ffCmd := ff.WithInput(rr).WithOutput(writer).Compile()
