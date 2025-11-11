@@ -229,8 +229,6 @@ func (c *Converter) ConvertIfNeeded(ctx context.Context, rr *ReReadCloser) (read
 		if err == nil {
 			ff = ff.GlobalArgs("-progress", "unix:"+progressSockFilename)
 		}
-	} else {
-		c.UpdateProgressPercentCallback(processStr, -1)
 	}
 
 	ffCmd := ff.WithInput(rr).WithOutput(writer).Compile()
