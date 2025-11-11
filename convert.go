@@ -188,10 +188,10 @@ func (c *Converter) ConvertIfNeeded(ctx context.Context, rr *ReReadCloser) (read
 	args := ffmpeg_go.KwArgs{"format": outputFormat}
 
 	if videoNeeded {
-		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"movflags": "frag_keyframe+empty_moov+faststart"}})
+		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"movflags": "frag_keyframe+faststart"}})
 
 		if c.VideoConvertNeeded {
-			args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"c:v": "libx264", "crf": 30, "preset": "veryfast"}})
+			args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"c:v": "libx264", "crf": 40, "preset": "veryfast"}})
 		} else {
 			args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"c:v": "copy"}})
 		}
