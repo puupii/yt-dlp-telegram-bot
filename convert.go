@@ -189,17 +189,13 @@ func (c *Converter) ConvertIfNeeded(ctx context.Context, rr *ReReadCloser) (read
 
 	if videoNeeded {
 		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"movflags": "frag_keyframe+faststart"}})
+		//downscale video resolution by half
+		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"s": "720:1280"}})
 
-		if c.VideoConvertNeeded {
-			args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"c:v": "libx264", "crf": 40, "preset": "veryfast"}})
-		} else {
-			args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"c:v": "copy"}})
-		}
+		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"c:v": "libx264", "crf": 40, "preset": "veryfast"}})
 	} else {
 		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"vn": ""}})
 	}
-	//downscale video resolution by half
-	args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"s": "720:1280"}})
 
 	if c.AudioConvertNeeded {
 		if c.Format == "mp3" {
