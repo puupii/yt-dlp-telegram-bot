@@ -143,7 +143,6 @@ func main() {
 	}
 
 	client := telegram.NewClient(params.ApiID, params.ApiHash, opts)
-	fmt.Println(client)
 
 	if err := client.Run(context.Background(), func(ctx context.Context) error {
 		status, err := client.Auth().Status(ctx)
