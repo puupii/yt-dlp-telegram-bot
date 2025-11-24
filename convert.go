@@ -193,7 +193,7 @@ func (c *Converter) ConvertIfNeeded(ctx context.Context, rr *ReReadCloser) (read
 		//downscale video resolution by half
 		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"vf": "scale=720:1280"}})
 
-		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"c:v": "libx264", "crf": 40, "preset": "veryfast"}})
+		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"c:v": "libx264", "crf": 25, "preset": "veryfast"}})
 	} else {
 		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"vn": ""}})
 	}
