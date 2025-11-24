@@ -199,7 +199,7 @@ func (c *Converter) ConvertIfNeeded(ctx context.Context, rr *ReReadCloser) (read
 		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"vn": ""}})
 	}
 	//downscale video resolution by half
-	args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"vf": "scale=iw/2:ih/2"}})
+	args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"s": "720:1280"}})
 
 	if c.AudioConvertNeeded {
 		if c.Format == "mp3" {
