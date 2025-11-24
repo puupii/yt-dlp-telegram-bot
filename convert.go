@@ -188,8 +188,6 @@ func (c *Converter) ConvertIfNeeded(ctx context.Context, rr *ReReadCloser) (read
 	args := ffmpeg_go.KwArgs{"format": outputFormat}
 
 	if videoNeeded {
-		//downscale video resolution by half
-		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"vf": "", "scale": "iw/2:ih/2"}})
 		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"movflags": "frag_keyframe+faststart"}})
 
 		if c.VideoConvertNeeded {
@@ -200,6 +198,8 @@ func (c *Converter) ConvertIfNeeded(ctx context.Context, rr *ReReadCloser) (read
 	} else {
 		args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"vn": ""}})
 	}
+	//downscale video resolution by half
+	args = ffmpeg_go.MergeKwArgs([]ffmpeg_go.KwArgs{args, {"vf": "scale=iw/2:ih/2"}})
 
 	if c.AudioConvertNeeded {
 		if c.Format == "mp3" {
